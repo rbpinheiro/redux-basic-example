@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Redux basic example</title>
+    <script src="https://npmcdn.com/redux@latest/dist/redux.min.js"></script>
+    <style>
+      .counter {
+        width: 100px;
+        margin: 0 auto;
+        padding: 10px;
+        font-family: Helvetica, sans-serif;
+        text-align: center;
+      }
+      button {
+        box-sizing: border-box;
+        width:40%;
+        margin: 0;
+        font-size: 25px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="counter">
+      Counter: <span id="value">0</span>
+      <button id="increment">+</button>
+      <button id="decrement">-</button>
+    </div>
+    <script>
+      var initialState = {
+        value: 0
+      };
+      
+      /*
+        Action
+       */
+      function increment() {
+        console.log('----Action------');
+        console.log('Type: INCREMENT');
+        console.log('----------------');
+        return {
+          type: 'INCREMENT'
+        };
+      }
+      
+      function decrement() {
+        console.log('----Action------');
+        console.log('Type: DECREMENT');
+        console.log('----------------');
+        return {
+          type: 'DECREMENT'
+        };
+      }
+
+      /*
+        Reducer
+       */
+      function counter(state, action) {
+        console.log('----Reducer-----');
+        console.log('State:', state);
+        console.log('Action:', action);
+        console.log('----------------');
+        switch (action.type) {
+          case 'INCREMENT':
+            return {
+              value: state.value + 1
+            };
+          case 'DECREMENT':
+            return {
+              value: state.value - 1
+            };
+          default:
+            return state;
+        }
+      }
+      
+      /*
+        Store
+       */
+      var store = Redux.createStore(
+        counter,
+        initialState,
+        window.devToolsExtension && window.devToolsExtension()
+      );
+
+      store.subscribe(render);
+      
+      /*
+        View
+       */
+      function render() {
+        var state = store.getState();
+        console.log('----VIEW--------');
+        console.log('State:', state);
+        console.log('----------------');
+        document.getElementById('value').innerHTML = state.value;
+      }
+
+      document
+      .getElementById('increment')
+      .addEventListener('click', function() {
+        store.dispatch(increment());
+      });
+
+      document
+      .getElementById('decrement')
+      .addEventListener('click', function() {
+        store.dispatch(decrement());
+      });
+
+    </script>
+  </body>
+</html>

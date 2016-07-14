@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Redux basic example</title>
+    <script src="https://npmcdn.com/redux@latest/dist/redux.min.js"></script>
+    <style>
+      .container {
+        width: 700px;
+        margin: 0 auto;
+      }
+      .row {
+        width: 50%;
+        float: left;
+      }
+      .counter {
+        width: 100px;
+        margin: 0 auto;
+        padding: 10px;
+        font-family: Helvetica, sans-serif;
+        text-align: center;
+      }
+      .red {
+        background-color: #E7605C;
+        color: #FDF5E6;
+      }
+      .green {
+        background-color: #8DD6D2;
+      }
+      button {
+        box-sizing: border-box;
+        width:40%;
+        margin: 0;
+        font-size: 25px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="counter red">
+          Counter: <span id="value-red-1">0</span>
+          <button id="incrementRed">+</button>
+          <button id="decrementRed">-</button>
+        </div>
+        <div class="counter green">
+          Counter: <span id="value-green-1">0</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="counter green">
+          Counter: <span id="value-green-2">0</span>
+          <button id="incrementGreen">+</button>
+          <button id="decrementGreen">-</button>
+        </div>
+        <div class="counter red">
+          Counter: <span id="value-red-2">0</span>
+        </div>
+      </div>
+    </div>
+    <script>
+      /*
+       *
+       * RED
+       * 
+       */
+      
+      /*
+        Action
+       */
+      function incrementRed() {
+        console.log('----Action------');
+        console.log('Type: INCREMENT_RED');
+        console.log('----------------');
+        return {
+          type: 'INCREMENT_RED'
+        };
+      }
+      
+      function decrementRed() {
+        console.log('----Action------');
+        console.log('Type: DECREMENT_RED');
+        console.log('----------------');
+        return {
+          type: 'DECREMENT_RED'
+        };
+      }
+
+      /*
+        Reducer
+       */
+      function redCounter(state, action) {
+        state = state || {
+          value: 0
+        };
+        console.log('----Red Reducer-----');
+        console.log('State:', state);
+        console.log('Action:', action);
+        console.log('--------------------');
+        switch (action.type) {
+          case 'INCREMENT_RED':
+            return {
+              value: state.value + 1
+            };
+          case 'DECREMENT_RED':
+            return {
+              value: state.value - 1
+            };
+          default:
+            return state;
+        }
+      }
+
+      /*
+       *
+       * GREEN
+       * 
+       */
+
+      /*
+        Action
+       */
+      function incrementGreen() {
+        console.log('----Action------');
+        console.log('Type: INCREMENT_GREEN');
+        console.log('----------------');
+        return {
+          type: 'INCREMENT_GREEN'
+        };
+      }
+      
+      function decrementGreen() {
+        console.log('----Action------');
+        console.log('Type: DECREMENT_GREEN');
+        console.log('----------------');
+        return {
+          type: 'DECREMENT_GREEN'
+        };
+      }
+
+      /*
+        Reducer
+       */
+
+      function greenCounter(state, action) {
+        state = state || {
+          value: 0
+        };
+        console.log('----Green Reducer---');
+        console.log('State:', state);
+        console.log('Action:', action);
+        console.log('--------------------');
+        switch (action.type) {
+          case 'INCREMENT_GREEN':
+            return {
+              value: state.value + 1.5
+            };
+          case 'DECREMENT_GREEN':
+            return {
+              value: state.value - 1.5
+            };
+          default:
+            return state;
+        }
+      }
+      
+      /*
+        Store
+       */
+      
+      var reducer = Redux.combineReducers({
+        red   : redCounter,
+        green : greenCounter
+      });
+
+      var store = Redux.createStore(
+        reducer,
+        undefined,
+        window.devToolsExtension && window.devToolsExtension()
+      );
+
+      store.subscribe(render);
+      
+      /*
+        View
+       */
+      function render() {
+        var state = store.getState();
+        console.log('----VIEW--------');
+        console.log('State:', JSON.stringify(state, null, 2));
+        console.log('----------------');
+        document.getElementById('value-red-1').innerHTML = state.red.value;
+        document.getElementById('value-red-2').innerHTML = state.red.value;
+        document.getElementById('value-green-1').innerHTML = state.green.value;
+        document.getElementById('value-green-2').innerHTML = state.green.value;
+      }
+
+      document
+      .getElementById('incrementRed')
+      .addEventListener('click', function() {
+        store.dispatch(incrementRed());
+      });
+
+      document
+      .getElementById('decrementRed')
+      .addEventListener('click', function() {
+        store.dispatch(decrementRed());
+      });
+
+      document
+      .getElementById('incrementGreen')
+      .addEventListener('click', function() {
+        store.dispatch(incrementGreen());
+      });
+
+      document
+      .getElementById('decrementGreen')
+      .addEventListener('click', function() {
+        store.dispatch(decrementGreen());
+      });
+
+    </script>
+  </body>
+</html>
